@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
 </head>
+
 <body>
     <h1>User profile</h1>
 
-        <!-- User Details Section -->
-        <section>
-            <h2>User Details</h2>
-            <p>Name: John Doe</p> <!-- Replace with actual user details -->
-            <p>Account Number: 1234567890</p> <!-- Replace with actual user details -->
-        </section>
+    <!-- User Details Section -->
+    <section>
+        <h2>User Details</h2>
+        <p>Name: John Doe</p> <!-- Replace with actual user details -->
+        <p>Account Number: 1234567890</p> <!-- Replace with actual user details -->
+    </section>
 
-            <!-- Bank Statement Download Button -->
+    <!-- Add a button or link to trigger the popup -->
+    <button id="filter-transactions-btn">Filter Transactions</button>
+
+    <!-- Bank Statement Download Button -->
     <section>
         <h2>Download Bank Statement</h2>
-        <a href="{% url 'download_bank_statement' %}" class="btn btn-primary">Download</a>
+        <a href="{% url 'download_bank_statement' %}" class="btn btn-primary">Download Bank Statement</a>
+        <a href="#" class="send-email-btn">Send Via Email</a>
     </section>
 
     <!-- Transaction Table -->
@@ -44,4 +50,5 @@
         </table>
     </section>
 </body>
+
 </html>
