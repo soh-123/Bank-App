@@ -24,8 +24,9 @@
     <section>
         <h2>Download Bank Statement</h2>
         <a href="{% url 'download_bank_statement' %}" class="btn btn-primary">Download Bank Statement</a>
-        <a href="#" class="send-email-btn">Send Via Email</a>
     </section>
+    <h2>Send Via Email</h2>
+    <button id="send-email-btn">Send Email</button>
 
     <!-- Transaction Table -->
     <section>
@@ -52,3 +53,83 @@
 </body>
 
 </html>
+
+<script>
+    document.getElementById('send-email-btn').addEventListener('click', function () {
+        // const csrftoken = getCookie('csrftoken');
+        // Make an AJAX request to the Django view that sends the email
+        fetch('/send_email/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({}),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data (e.g., show a success message)
+                console.log(data);
+                alert(data.message); // Show a message to the user
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while sending the email.'); // Show an error message to the user
+            });
+    });
+
+    // Add an event listener to the filter button to show the filter popup
+    document.getElementById('filter-btn').addEventListener('click', function () {
+        document.getElementById('filter-popup').style.display = 'block';
+    });
+
+    // Add an event listener to the filter submit button
+    document.getElementById('filter-submit').addEventListener('click', function () {
+        const email = document.getElementById('email').value;
+        const startDate = document.getElementById('start_date').value;
+        const endDate = document.getElementById('end_date').value;
+
+        // Make an AJAX request to the Django view to filter transactions
+        fetch('/filter_transactions/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+            },
+            body: JSON.stringify({ email, startDate, endDate }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data (e.g., update the transaction table)
+                updateTransactionTable(data.transactions);
+                document.getElementById('filter-popup').style.display = 'none'; // Hide the popup
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while filtering transactions.');
+            });
+    });
+
+    // Function to update the transaction table with filtered data
+    function updateTransactionTable(transactions) {
+        const tableBody = document.getElementById('filtered-transactions');
+        tableBody.innerHTML = '';
+
+        transactions.forEach(transaction => {
+            const row = tableBody.insertRow();
+            const emailCell = row.insertCell(0);
+            const dateCell = row.insertCell(1);
+            const amountCell = row.insertCell(2);
+
+            emailCell.textContent = transaction.user_email;
+            dateCell.textContent = transaction.date_of_transaction;
+            amountCell.textContent = transaction.amount;
+        });
+    }
+
+    // Function to retrieve the CSRF token from cookies
+    function getCookie(name) {
+        const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+        return cookieValue ? cookieValue.pop() : '';
+    }
+
+</script>
