@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+</head>
+<body>
+    <h1>User profile</h1>
+
+        <!-- User Details Section -->
+        <section>
+            <h2>User Details</h2>
+            <p>Name: John Doe</p> <!-- Replace with actual user details -->
+            <p>Account Number: 1234567890</p> <!-- Replace with actual user details -->
+        </section>
+
+            <!-- Bank Statement Download Button -->
+    <section>
+        <h2>Download Bank Statement</h2>
+        <a href="{% url 'download_bank_statement' %}" class="btn btn-primary">Download</a>
+    </section>
+
+    <!-- Transaction Table -->
+    <section>
+        <h2>Transaction History</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>User Email</th>
+                    <th>Date of Transaction</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.user_email }}</td>
+                    <td>{{ transaction.date_of_transaction }}</td>
+                    <td>{{ transaction.amount }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>
