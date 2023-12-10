@@ -4,132 +4,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
+    <title>Bank Statement Generator</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        section {
+            background-color: #fff;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="email"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .btn-download {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-download:hover {
+        background-color: #2980b9;
+    }
+
+    .btn-email {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-email:hover {
+        background-color: #2980b9;
+    }
+    </style>
+
 </head>
 
 <body>
-    <h1>User profile</h1>
+    <h1>Bank Statement Generator</h1>
 
-    <!-- User Details Section -->
-    <section>
-        <h2>User Details</h2>
-        <p>Name: John Doe</p> <!-- Replace with actual user details -->
-        <p>Account Number: 1234567890</p> <!-- Replace with actual user details -->
-    </section>
+    <!-- Filter form -->
+    <div>
+        <form action="{% url 'home' %}" method="post">
+            {% csrf_token %}
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+            {% if error_message %}
+            <p style="color: red;">{{ error_message }}</p>
+            {% endif %}
+            <br><br>
 
-    <!-- Add a button or link to trigger the popup -->
-    <button id="filter-transactions-btn">Filter Transactions</button>
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" required>
+            <br><br>
 
-    <!-- Bank Statement Download Button -->
-    <section>
-        <h2>Download Bank Statement</h2>
-        <a href="{% url 'download_bank_statement' %}" class="btn btn-primary">Download Bank Statement</a>
-    </section>
-    <h2>Send Via Email</h2>
-    <button id="send-email-btn">Send Email</button>
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" required>
+            <br><br>
 
-    <!-- Transaction Table -->
-    <section>
-        <h2>Transaction History</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>User Email</th>
-                    <th>Date of Transaction</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for transaction in transactions %}
-                <tr>
-                    <td>{{ transaction.user_email }}</td>
-                    <td>{{ transaction.date_of_transaction }}</td>
-                    <td>{{ transaction.amount }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </section>
+            <a href="{% url 'download_bank_statement' %}" class="btn btn-download">Download</a>
+            <input type="submit" value="Send Email" name="send_email">
+            <!-- <a href="{% url 'send_email' %}" class="btn btn-email">Send Email</a> -->
+
+        </form>
+    </div>
 </body>
 
 </html>
-
-<script>
-    document.getElementById('send-email-btn').addEventListener('click', function () {
-        // const csrftoken = getCookie('csrftoken');
-        // Make an AJAX request to the Django view that sends the email
-        fetch('/send_email/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response data (e.g., show a success message)
-                console.log(data);
-                alert(data.message); // Show a message to the user
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while sending the email.'); // Show an error message to the user
-            });
-    });
-
-    // Add an event listener to the filter button to show the filter popup
-    document.getElementById('filter-btn').addEventListener('click', function () {
-        document.getElementById('filter-popup').style.display = 'block';
-    });
-
-    // Add an event listener to the filter submit button
-    document.getElementById('filter-submit').addEventListener('click', function () {
-        const email = document.getElementById('email').value;
-        const startDate = document.getElementById('start_date').value;
-        const endDate = document.getElementById('end_date').value;
-
-        // Make an AJAX request to the Django view to filter transactions
-        fetch('/filter_transactions/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
-            },
-            body: JSON.stringify({ email, startDate, endDate }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response data (e.g., update the transaction table)
-                updateTransactionTable(data.transactions);
-                document.getElementById('filter-popup').style.display = 'none'; // Hide the popup
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while filtering transactions.');
-            });
-    });
-
-    // Function to update the transaction table with filtered data
-    function updateTransactionTable(transactions) {
-        const tableBody = document.getElementById('filtered-transactions');
-        tableBody.innerHTML = '';
-
-        transactions.forEach(transaction => {
-            const row = tableBody.insertRow();
-            const emailCell = row.insertCell(0);
-            const dateCell = row.insertCell(1);
-            const amountCell = row.insertCell(2);
-
-            emailCell.textContent = transaction.user_email;
-            dateCell.textContent = transaction.date_of_transaction;
-            amountCell.textContent = transaction.amount;
-        });
-    }
-
-    // Function to retrieve the CSRF token from cookies
-    function getCookie(name) {
-        const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-        return cookieValue ? cookieValue.pop() : '';
-    }
-
-</script>
