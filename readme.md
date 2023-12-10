@@ -1,6 +1,6 @@
 # Bank Statement Generator
 
-This Django-based banking application allows users to view their transaction history, filter transactions by date and email, and download a bank statement in CSV format.
+This Django-based banking application allows users to filter transactions by date and email, and download a bank statement in CSV format or send it via email.
 
 ## Installation
 
@@ -59,12 +59,11 @@ Follow these steps to set up the banking application locally on your development
    Create a `.env` file in the project directory and set the following environment variables:
 
    ```
-   DEBUG=True
    EMAIL_HOST_USER=your_email@example.com
    EMAIL_HOST_PASSWORD=your_email_password
    ```
 
-   Replace `your_email@example.com`, and `your_email_password` with your actual configuration.
+   Replace `your_email@example.com`, and `your_email_password` with your actual configuration, I am using Google email server.
 
 7. **Apply Migrations**:
 
