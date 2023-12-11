@@ -1,99 +1,83 @@
-# Bank Statement Generator
+# Bank Statement Service
 
-This Django-based banking application allows users to filter transactions by date and email, and download a bank statement in CSV format or send it via email.
+## Overview
+The Bank Statement Service is a set of microservices designed to generate and email a PDF statement containing a user's bank transactions over a specified period. The project consists of four separate services: API Service, Database Service, PDF Generation Service, and Email Service.
+
+## Project Structure
+The project is divided into the following main components:
+
+- `api_service`: The Flask application serving as the entry point for generating bank statements.
+- `database_service`: Handles fetching and filtering transaction data from a CSV file.
+- `pdf_service`: Generates a PDF document from transaction data.
+- `email_service`: Sends the generated PDF to the user's email.
+
+## Prerequisites
+- Python 3.x
+- Pip (Python package manager)
 
 ## Installation
 
-Follow these steps to set up the banking application locally on your development machine:
+1. **Clone the Repository**
+```bash
+git clone [repository-url]
+```
 
-1. **Clone the Repository**:
+2. **Navigate to the Project Directory**
 
-   Clone this repository to your local machine using Git:
+3. **Set Up a Python Virtual Environment (Optional but Recommended)**
+- Create the virtual environment:
+  ```
+  python -m venv venv
+  ```
+- Activate the virtual environment:
+  - On Linux/Mac:
+    ```
+    source venv/bin/activate
+    ```
+  - On Windows:
+    ```
+    venv\Scripts\activate
+    ```
 
-   ```bash
-   git clone https://github.com/your-username/banking-application.git
-   ```
+4. **Install Required Dependencies**
+```bash
+pip install -r requirements.txt
+```
 
-2. **Navigate to the Project Directory**:
+## Running the Services
+  - On Linux/Mac:
+    ```
+    ./start_services.sh
+    ```
+  - On Windows:
+    ```
+    ./start_services.bat
+    ```
 
-   Change your working directory to the project's root folder:
-
-   ```bash
-   cd banking-application
-   ```
-
-3. **Create a Virtual Environment (Optional but Recommended)**:
-
-   It's a good practice to create a virtual environment to isolate the project dependencies:
-
-   ```bash
-   python -m venv venv
-   ```
-
-4. **Activate the Virtual Environment**:
-
-   Activate the virtual environment:
-
-   - On Windows:
-
-     ```bash
-     venv\Scripts\activate
-     ```
-
-   - On macOS and Linux:
-
-     ```bash
-     source venv/bin/activate
-     ```
-
-5. **Install Dependencies**:
-
-   Install the project's dependencies from the `requirements.txt` file:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-6. **Set Up Environment Variables**:
-
-   Create a `.env` file in the project directory and set the following environment variables:
-
-   ```
-   EMAIL_HOST_USER=your_email@example.com
-   EMAIL_HOST_PASSWORD=your_email_password
-   ```
-
-   Replace `your_email@example.com`, and `your_email_password` with your actual configuration, I am using Google email server.
-
-7. **Apply Migrations**:
-
-   Apply database migrations to create the necessary database tables:
-
-   ```bash
-   python manage.py migrate
-   ```
-
-## Running the Application
-
-To run the banking application, follow these steps:
-
-1. **Run the Development Server**:
-
-   Start the Django development server:
-
-   ```bash
-   python manage.py runserver
-   ```
-
-2. **Access the Application**:
-
-   Open a web browser and go to [http://localhost:8000/](http://localhost:8000/) to access the application.
 
 ## Usage
 
-- **User Profile Page**: Upon accessing the application, you will see the user profile page, displaying user details, a "Download Bank Statement" button, and a "Filter Transactions" button.
+To generate and email a bank statement:
 
-- **Download Bank Statement**: Click the "Download Bank Statement" button to download a CSV file containing all transactions.
+1. Send a POST request to `http://localhost:5000/generate-statement` with the following JSON payload:
+```json
+{
+    "user_email": "user@example.com",
+    "start_date": "YYYY-MM-DD",
+    "end_date": "YYYY-MM-DD"
+}
+example request:
 
-- **Filter Transactions**: Click the "Filter Transactions" button to open a popup dialog. Enter an email address, start date, and end date to filter transactions. Click the "Filter" button to view filtered transactions in the table on the same page.
+curl -X POST http://localhost:5000/generate-statement \
+-H "Content-Type: application/json" \
+-d '{"user_email": "user1@example.com", "start_date": "2022-01-01", "end_date": "2022-12-31"}'
+
+```
+## Notes
+- The email_sender service is set up to use a local SMTP server. You'll need to configure this to work with a real email server, including authentication and server details.
+- run this command 
+```bash
+python -m smtpd -c DebuggingServer -n localhost:1025
+```
+for viewing the sent email in the terminal.
 
